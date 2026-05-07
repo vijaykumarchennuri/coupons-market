@@ -24,7 +24,7 @@ function addCoupon() {
 
     let userId = localStorage.getItem("userId");
     console.log("User ID:", userId);
-    fetch("https://coupons-market-1.onrender.com/coupon/add/" + userId, {
+    fetch(API + "/coupon/add/" + userId, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
