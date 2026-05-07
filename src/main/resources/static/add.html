@@ -18,13 +18,13 @@
 <button onclick="back()">Back</button>
 
 <script>
-const API = "http://localhost:8081";
+const API = "https://coupons-market-1.onrender.com";
 
 function addCoupon() {
 
     let userId = localStorage.getItem("userId");
     console.log("User ID:", userId);
-    fetch("http://localhost:8081/coupon/add/" + userId, {
+    fetch("https://coupons-market-1.onrender.com/coupon/add/" + userId, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
