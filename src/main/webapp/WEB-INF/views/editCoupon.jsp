@@ -16,6 +16,27 @@ content="width=device-width, initial-scale=1.0">
 </head>
 
 <body>
+<div class="main-header">
+
+<div class="logo-section">
+
+<img src="/images/logo.png"
+class="logo-img">
+
+<div>
+
+<h2>CM - Coupons Market</h2>
+
+<p>Save More, Shop More</p>
+
+</div>
+
+</div>
+
+
+</div>
+
+<div class="app">
 
 <div class="container">
 

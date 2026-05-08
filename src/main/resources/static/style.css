@@ -18,9 +18,9 @@ body{
 
 .app{
     width:100%;
-    max-width:430px;
-    margin:0 auto;
+
     min-height:100vh;
+
     background:#f4f4f4;
 }
 
@@ -314,5 +314,141 @@ form button{
     .category{
         min-width:90px;
         font-size:14px;
+    }
+}
+
+.footer-marquee{
+
+    margin-top:20px;
+
+    padding:12px;
+
+    background:#667eea;
+
+    color:white;
+
+    font-weight:bold;
+
+    font-size:14px;
+}
+
+.main-header{
+
+    width:100%;
+
+    background:#667eea;
+
+    color:white;
+
+    padding:15px 25px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    position:relative;
+
+    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* LEFT LOGO SECTION */
+
+.logo-section{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    z-index:2;
+}
+
+/* LOGO */
+
+.logo-img{
+
+    width:70px;
+
+    height:70px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    background:white;
+}
+
+/* LOGO TEXT */
+
+.logo-section h2{
+
+    margin:0;
+
+    font-size:22px;
+}
+
+.logo-section p{
+
+    margin:0;
+
+    font-size:14px;
+}
+
+/* CENTER TITLE */
+
+.header-title{
+
+    position:absolute;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    font-size:22px;
+
+    font-weight:bold;
+
+    text-align:center;
+}
+
+/* MOBILE RESPONSIVE */
+
+@media screen and (max-width:768px){
+
+    .main-header{
+
+        flex-direction:column;
+
+        gap:10px;
+
+        text-align:center;
+
+        padding:15px;
+    }
+
+    .header-title{
+
+        position:static;
+
+        transform:none;
+
+        margin-top:10px;
+
+        font-size:20px;
+    }
+
+    .logo-section{
+
+        justify-content:center;
+    }
+
+    .logo-img{
+
+        width:60px;
+
+        height:60px;
     }
 }
