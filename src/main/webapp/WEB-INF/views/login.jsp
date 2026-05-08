@@ -33,7 +33,6 @@
             Discover amazing offers on shopping,
             food, lounge access, entertainment
             and more!
-                  <br>   <b>  -Vijay Chennuri</b>
 
         </p>
 
@@ -46,7 +45,6 @@
     </div>
 
 </div>
-
 <div class="main-header">
 
 <div class="logo-section">
@@ -148,8 +146,23 @@ window.onload = function(){
 }
 
 </script>
-
 <script>
+
+window.onload = function(){
+
+    if(!sessionStorage.getItem("popupShown")){
+
+        document.getElementById("popupOverlay")
+        .style.display = "flex";
+
+        sessionStorage.setItem("popupShown","true");
+
+    }else{
+
+        document.getElementById("popupOverlay")
+        .style.display = "none";
+    }
+};
 
 function closePopup(){
 
@@ -158,7 +171,6 @@ function closePopup(){
 }
 
 </script>
-
 </body>
 
 </html>
