@@ -3,80 +3,191 @@ package CuponCodes.CuponCodes.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-import CuponCodes.CuponCodes.dto.CouponDTO;
 import CuponCodes.CuponCodes.entity.Coupon;
 import CuponCodes.CuponCodes.entity.User;
 import CuponCodes.CuponCodes.service.CouponService;
-import CuponCodes.CuponCodes.service.UserService;
+import jakarta.servlet.http.HttpSession;
 
-@RestController
-@RequestMapping("/coupon")
+@Controller
 public class CouponController {
 
     @Autowired
     private CouponService service;
 
-    @Autowired
-    private UserService userService;
+    // ================= DASHBOARD =================
 
-    @PostMapping("/add/{userId}")
-    public Coupon addCoupon(@RequestBody Coupon coupon, @PathVariable Long userId) {
+    @GetMapping("/dashboard")
+    public String dashboard(Model model) {
 
-        User user = userService.getUserById(userId);
-        coupon.setUser(user);
+        List<Coupon> coupons = service.getAllCoupons();
 
-        return service.addCoupon(coupon);
+        // MASK COUPON CODES
+        for(Coupon c : coupons) {
+
+            c.setCouponCode(
+                    service.maskCoupon(c.getCouponCode())
+            );
+        }
+
+        model.addAttribute("coupons", coupons);
+
+        return "dashboard";
     }
 
-    @PutMapping("/update/{id}")
-    public Coupon updateCoupon(@PathVariable Long id, @RequestBody Coupon updated) {
+    // ================= CATEGORY FILTER =================
 
-        Coupon existing = service.getById(id);
+    @GetMapping("/category/{name}")
+    public String category(@PathVariable String name,
+                           Model model) {
 
-        existing.setTitle(updated.getTitle());
-        existing.setCouponCode(updated.getCouponCode());
-        existing.setPrice(updated.getPrice());
-        existing.setPhoneNumber(updated.getPhoneNumber());
+        List<Coupon> coupons =
+                service.getByCategory(name);
 
-        return service.addCoupon(existing);
+        // MASK COUPON CODES
+        for(Coupon c : coupons) {
+
+            c.setCouponCode(
+                    service.maskCoupon(c.getCouponCode())
+            );
+        }
+
+        model.addAttribute("coupons", coupons);
+
+        return "dashboard";
     }
 
+    // ================= ADD COUPON =================
 
+    @PostMapping("/addCoupon")
+    public String addCoupon(Coupon coupon,
+                            HttpSession session,
+                            Model model) {
 
-    @GetMapping("/all")
-    public List<CouponDTO> getAllCoupons() {
+        // MOBILE VALIDATION
+        if(coupon.getPhoneNumber() == null ||
+           !coupon.getPhoneNumber().matches("\\d{10}")) {
 
-        return service.getAllCoupons().stream().map(c -> {
+            model.addAttribute("error",
+                    "Mobile number must contain exactly 10 digits");
 
-            CouponDTO dto = new CouponDTO();
-            dto.setId(c.getId());
+            List<Coupon> coupons = service.getAllCoupons();
 
-            dto.setTitle(c.getTitle());
-            dto.setCouponCode(service.maskCoupon(c.getCouponCode()));
-            dto.setPrice(c.getPrice());
-            dto.setPhoneNumber(c.getPhoneNumber());
+            for(Coupon c : coupons) {
 
-            if (c.getUser() != null) {
-                dto.setUsername(c.getUser().getUsername());
+                c.setCouponCode(
+                        service.maskCoupon(c.getCouponCode())
+                );
             }
 
-            return dto;
+            model.addAttribute("coupons", coupons);
 
-        }).toList();
+            return "dashboard";
+        }
+
+        User user =
+                (User) session.getAttribute("user");
+
+        coupon.setUser(user);
+
+        service.saveCoupon(coupon);
+
+        model.addAttribute("success",
+                "Coupon Added Successfully");
+
+        List<Coupon> coupons = service.getAllCoupons();
+
+        // MASK COUPON CODES
+        for(Coupon c : coupons) {
+
+            c.setCouponCode(
+                    service.maskCoupon(c.getCouponCode())
+            );
+        }
+
+        model.addAttribute("coupons", coupons);
+
+        return "dashboard";
     }
 
-    @DeleteMapping("/delete/{id}")
-    public String deleteCoupon(@PathVariable Long id) {
-        service.deleteCoupon(id);
-        return "Deleted";
+    // ================= DELETE COUPON =================
+
+    @GetMapping("/delete/{id}")
+    public String deleteCoupon(@PathVariable Long id,
+                               HttpSession session) {
+
+        User user =
+                (User) session.getAttribute("user");
+
+        Coupon coupon = service.getById(id);
+
+        // ONLY OWNER CAN DELETE
+        if(coupon != null &&
+           coupon.getUser().getUsername()
+           .equals(user.getUsername())) {
+
+            service.deleteCoupon(id);
+        }
+
+        return "redirect:/dashboard";
+    }
+
+    // ================= EDIT PAGE =================
+
+    @GetMapping("/edit/{id}")
+    public String editCoupon(@PathVariable Long id,
+                             Model model,
+                             HttpSession session) {
+
+        User user =
+                (User) session.getAttribute("user");
+
+        Coupon coupon = service.getById(id);
+
+        // ONLY OWNER CAN EDIT
+        if(coupon != null &&
+           coupon.getUser().getUsername()
+           .equals(user.getUsername())) {
+
+            model.addAttribute("coupon", coupon);
+
+            return "editCoupon";
+        }
+
+        return "redirect:/dashboard";
+    }
+
+    // ================= UPDATE COUPON =================
+
+    @PostMapping("/updateCoupon")
+    public String updateCoupon(Coupon coupon,
+                               HttpSession session,
+                               Model model) {
+
+        // MOBILE VALIDATION
+        if(coupon.getPhoneNumber() == null ||
+           !coupon.getPhoneNumber().matches("\\d{10}")) {
+
+            model.addAttribute("error",
+                    "Mobile number must contain exactly 10 digits");
+
+            model.addAttribute("coupon", coupon);
+
+            return "editCoupon";
+        }
+
+        User user =
+                (User) session.getAttribute("user");
+
+        coupon.setUser(user);
+
+        service.saveCoupon(coupon);
+
+        return "redirect:/dashboard";
     }
 }

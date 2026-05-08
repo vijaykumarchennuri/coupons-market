@@ -14,24 +14,35 @@ public class CouponService {
     @Autowired
     private CouponRepository repository;
 
-    public Coupon addCoupon(Coupon coupon) {
+    public Coupon saveCoupon(Coupon coupon) {
         return repository.save(coupon);
-    }
-
-    public Coupon getById(Long id) {
-        return repository.findById(id).orElse(null);
     }
 
     public List<Coupon> getAllCoupons() {
         return repository.findAll();
     }
 
-    public String maskCoupon(String code) {
-        if (code.length() <= 3) return code;
-        return code.substring(0, 3) + "X".repeat(code.length() - 3);
+    public List<Coupon> getByCategory(String category) {
+        return repository.findByCategory(category);
     }
 
     public void deleteCoupon(Long id) {
         repository.deleteById(id);
+    }
+
+    public Coupon getById(Long id) {
+        return repository.findById(id).orElse(null);
+    }
+    public String maskCoupon(String code) {
+
+        if(code == null || code.length() <= 2) {
+            return code;
+        }
+
+        String firstTwo = code.substring(0, 2);
+
+        String stars = "*".repeat(code.length() - 2);
+
+        return firstTwo + stars;
     }
 }
