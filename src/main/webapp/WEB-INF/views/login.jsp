@@ -33,6 +33,7 @@
             Discover amazing offers on shopping,
             food, lounge access, entertainment
             and more!
+            <br>   <b>  -Vijay Chennuri</b>
 
         </p>
 
