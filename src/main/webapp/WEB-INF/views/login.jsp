@@ -18,6 +18,35 @@
 </head>
 
 <body>
+
+<div id="popupOverlay" class="popup-overlay">
+
+    <div class="popup-box">
+
+        <h2>Welcome to Coupons Market 🎉</h2>
+
+        <p>
+
+            Here you can buy and sell coupon codes
+            at the best prices.
+
+            Discover amazing offers on shopping,
+            food, lounge access, entertainment
+            and more!
+                  <br>   <b>  -Vijay Chennuri</b>
+
+        </p>
+
+        <button onclick="closePopup()">
+
+            OK
+
+        </button>
+
+    </div>
+
+</div>
+
 <div class="main-header">
 
 <div class="logo-section">
@@ -116,6 +145,16 @@ window.onload = function(){
     "© Developed by Vijay Kumar Chennuri-2026";
 
     document.body.appendChild(footer);
+}
+
+</script>
+
+<script>
+
+function closePopup(){
+
+    document.getElementById("popupOverlay")
+    .style.display = "none";
 }
 
 </script>
